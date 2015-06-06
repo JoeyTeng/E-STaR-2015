@@ -4,3 +4,20 @@ Generator:
  Ex.
   To generate two similar food webs
   To generate two dissimiliar food webs
+
+IO:
+ Standard IO
+ Input:
+  Float (W)idth: How generalized can a species be
+  Float (D)epth: How many trophics can the food web have
+  Float (N)umber of the Species
+  Float (S)tandard Deviation of the data set (width)
+  Float (P)ossibility of the Cross-trophic level predation
+
+Basic Structure:
+ Directed Graph
+
+Steps:
+ Divide trophic level first
+ Connect Predation
+
