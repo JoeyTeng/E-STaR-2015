@@ -1,0 +1,8 @@
+Matcher:
+ Matches species on the two food webs
+ 1)For species within the same trophic level
+    allow one level up/down
+ 2)If a species have n preys, then it would matched to another species with n-1, n, n+1 preys
+ 3)There preys should match too
+ 4)Allow no match
+
