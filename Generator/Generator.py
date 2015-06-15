@@ -2,13 +2,18 @@
 #--coding:utf-8--
 
 import random
-import networkx
+import networkx as nx
 import matplotlib.pyplot as plt
+import re
 
 def GetInput(TransferFunction, String):
     while True:
+        string = raw_input(String)
         try:
-            return TransferFunction(raw_input(String))
+            if (re.search(r'[\S]*', string).group(0) == 'None'):
+                print '####None####'
+                return None
+            return TransferFunction(string)
         except ValueError:
             pass
 
@@ -27,13 +32,13 @@ def GetList(Now, Next, Cross, All, PossibilityCross):
     try:
         nSampleCrossList = nSampleNextList * PossibilityCross / (1 - PossibilityCross)
     except ZeroDivisionError:
-        nSmapleCrossList = len(CrossList)
-    print 'Next %r, Cross %r, All %r, Poss %r\nnNext %r, nCross %r\nNext %r\nCross %r' %(Next, Cross, All, PossibilityCross, nSampleNextList, nSampleCrossList, NextList, CrossList)
+        nSampleCrossList = len(CrossList)
+#    print 'Next %r, Cross %r, All %r, Poss %r\nnNext %r, nCross %r\nNext %r\nCross %r' %(Next, Cross, All, PossibilityCross, nSampleNextList, nSampleCrossList, NextList, CrossList)
     return random.sample(NextList, int(nSampleNextList)) +\
            random.sample(CrossList, int(nSampleCrossList))
 
-def Generator(NumberSpecies, Width, Depth, PossibilityCross = None, Mean = None, StandardDeviation = None):
-    Graph = {'Depth': 0}
+def Generator(NumberSpecies, Width, Depth, PossibilityCross = None, Mean = None, StandardDeviation = None, First = None):
+    Graph = {}
     if PossibilityCross == None:
         PossibilityCross = 0.5
     if PossibilityCross > 1:
@@ -41,14 +46,22 @@ def Generator(NumberSpecies, Width, Depth, PossibilityCross = None, Mean = None,
     if PossibilityCross < 0:
         PossibilityCross = 0
     Graph['PossibilityCross'] = PossibilityCross
+
     if Mean == None or Mean < 0:
         Mean = Width / 2
         Graph['Mean'] = Mean
     if StandardDeviation == None or StandardDeviation < 0:
         StandardDeviation = Width ** 2
     Graph['StandardDeviation'] = StandardDeviation
-    Variance = StandardDeviation ** 2 * NumberSpecies
+    Variance = (StandardDeviation ** 2) * NumberSpecies
     Graph['Variance'] = Variance
+
+    Graph['Depth'] = 0
+    if First > NumberSpecies:
+        First = None
+    if First != None:
+        Graph['level0'] = First
+        Graph['Depth'] = 1
 
     print "NumberSpecies %r\nWidth %r\nDepth %r\nPossibilityCross %r\nMean %r\nStandardDeviation%r\n"\
         %(NumberSpecies, Width, Depth, PossibilityCross, Mean, StandardDeviation)
@@ -66,7 +79,7 @@ def Generator(NumberSpecies, Width, Depth, PossibilityCross = None, Mean = None,
         Graph['level' + str(Graph['Depth'])] = NS
         Graph['Depth'] += 1
     Graph['level' + str(Graph['Depth'])] = None
-#    print Graph
+
     Graph['Width'] = 0
     for i in range(0, Graph['Total']):
         Graph[i] = []
@@ -81,17 +94,18 @@ def Generator(NumberSpecies, Width, Depth, PossibilityCross = None, Mean = None,
                             Graph['level' + str(Deep + 2)],  #Cross
                             Graph['Total'],                  #All #Number of Nodes below the level
                             Graph['PossibilityCross'])
-            print 'len %r, Mean %r, Variance %r, TmpList %r' %(len(TmpList), Mean, Variance, TmpList)
-            Graph[tot] =\
+            print 'len %r, Mean %r, Variance %r, TmpList %r' %(len(TmpList), Mean, Variance, None)#TmpList)
+            if len(TmpList) != 0:
+                Graph[tot] =\
                 sorted(
                     random.sample(
                         TmpList,
                         random.randint(
                             max(0, Mean - Variance),         #Number must in [-Va + Mean, Va + Mean]
-                            min(min
-                                    (Graph['Total'] - Graph['level' + str(Deep + 1)],
-                                    Width),
-                                Mean + Variance)
+                            min(min(
+                                    len(TmpList),            #Prevent Error: "Out of Range"
+                                    Width),                  #Limit: Width
+                                Mean + Variance)             #Limit: Mean & StandardDeviation
                         )
                     )
                 )#Choose preys from down levels
@@ -99,17 +113,51 @@ def Generator(NumberSpecies, Width, Depth, PossibilityCross = None, Mean = None,
             Graph['Width'] = max(Graph['Width'], len(Graph[tot]))
             tot += 1
         Now += Graph['level' + str(Deep)]
-#        for i
 
     return Graph
 
-#--main--
-Width = GetInput(lambda(x):int(x), 'Width: \n')
-Depth = GetInput(lambda(x):int(x), 'Depth: \n')
-NumberSpecies = GetInput(lambda(x):int(x), 'Number of Species: \n')
-PossibilityCross = GetInput(lambda(x):float(x), 'Possibility of Cross-trophic level predation taking place (%): \n')
-Mean = GetInput(float, 'Mean: \n')#Mean of Width of each node
-StandardDeviation = GetInput(lambda(x):float(x), 'Standard Deviation of Width of the Species: \n')
+def Transfer(Graph):
+    List = []
+    for i in range(0, Graph['Total']):
+        for j in Graph[i]:
+            List.append((i,j))
 
-Graph = Generator(NumberSpecies, Width, Depth, PossibilityCross, Mean, StandardDeviation)
-print Graph
+    print "List %r" %List
+    return List
+
+def Pos(Graph):
+    dictionary = {}
+    No = 0
+    for level in range(0, Graph['Depth']):
+        for i in range(0, Graph['level' + str(level)]):
+            dictionary[No] = (float(i) + level * 0.1, float(Graph['Depth'] - level))
+            No += 1
+    return dictionary
+
+def Dic(begin, end):
+    dictionary = {}
+    for i in range(begin, end):
+        dictionary[i] = i
+    return dictionary
+
+def Process():
+    Width = GetInput(lambda(x):int(x), 'Width: \n')
+    Depth = GetInput(lambda(x):int(x), 'Depth: \n')
+    NumberSpecies = GetInput(lambda(x):int(x), 'Number of Species: \n')
+    PossibilityCross = GetInput(lambda(x):float(x), 'Possibility of Cross-trophic level predation taking place (%): \n')
+    Mean = GetInput(float, 'Mean: \n')#Mean of Width of each node
+    StandardDeviation = GetInput(lambda(x):float(x), 'Standard Deviation of Width of the Species: \n')
+    First = GetInput(int, 'Number of Nodes in First Level:\n')
+
+    Graph = Generator(NumberSpecies, Width, Depth, PossibilityCross, Mean, StandardDeviation, First)
+    
+    print Graph
+
+    graph = nx.DiGraph(Transfer(Graph))
+    #Draw
+#    print nx.spring_layout(graph)
+    nx.draw_networkx(graph, pos = Pos(Graph))
+    plt.savefig('Graph.png')
+    plt.show()
+#--main--
+Process()
