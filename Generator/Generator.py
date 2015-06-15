@@ -90,8 +90,8 @@ def Generator(NumberSpecies, Width, Depth, PossibilityCross = None, Mean = None,
             TmpList = \
                         GetList(
                             Now,
-                            Graph['level' + str(Deep + 1)],  #Next
-                            Graph['level' + str(Deep + 2)],  #Cross
+                            Graph['level' + str(Deep)],  #Next
+                            Graph['level' + str(Deep + 1)],  #Cross
                             Graph['Total'],                  #All #Number of Nodes below the level
                             Graph['PossibilityCross'])
             print 'len %r, Mean %r, Variance %r, TmpList %r' %(len(TmpList), Mean, Variance, None)#TmpList)
@@ -110,6 +110,7 @@ def Generator(NumberSpecies, Width, Depth, PossibilityCross = None, Mean = None,
                     )
                 )#Choose preys from down levels
             Variance -= (Mean - len(Graph[tot])) ** 2
+            Variance = max(Variance, 0)
             Graph['Width'] = max(Graph['Width'], len(Graph[tot]))
             tot += 1
         Now += Graph['level' + str(Deep)]
