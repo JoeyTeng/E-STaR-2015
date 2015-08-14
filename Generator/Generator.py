@@ -7,7 +7,7 @@ import re
 
 def Read():
     List = []
-    for num in re.sub(r'[ ]+', ' ', raw_input()).split(' '):
+    for num in re.sub(r'[ ]+', ' ', raw_input("delta list\n")).split(' '):
         List.append(int(num))
 
     return List
@@ -28,12 +28,28 @@ def Generate(List):
     Graph['level%d' %Graph['level']] = [Graph['total']]
 
     for level in range(0, Graph['level'] - 1):
-        begin = Graph['level%d' %level][0]
+
         next = Graph['level%d' %(level + 1)][0]
         maximum = Graph['level%d' %(level + 1)][-1]
-        for point in Graph['level%d' %level]:
-            Graph[point] = range(next + point - begin, min((next + point - begin + 3), maximum) + 1)
+        Range = len(Graph['level%d' %(level + 1)])
 
+        begin = Graph['level%d' %level][0]
+        NumOfLevel = len(Graph['level%d' %level])
+        End = max(3, ((maximum - next + NumOfLevel - 1) / NumOfLevel) + 1)
+
+        present = next
+        for point in Graph['level%d' %level]:
+
+            PreyList = []
+            end = min(End, Range)
+            for delta in range(0, end):
+                PreyList.append(((present + delta) - next) % Range + next)
+
+            present = (present + end - next) % Range + next
+
+            Graph[point] = PreyList
+            #Graph[point] = range(next + point - begin, min((next + point - begin + 3), maximum) + 1)
+    print "Generated", Graph
     return Graph
 
 def RandSwap(Graph, percentage):
@@ -57,16 +73,22 @@ def RandSwap(Graph, percentage):
 
 def Add(Graph, possibility):
     count = {}
-    for i in range(0, Graph['level']):
+    for i in range(1, Graph['level']):
         count[i] = 0
-    for level in range(0, Graph['level']):
+
+    No = 0
+    for level in range(0, Graph['level'] - 1):
+        for point in Graph['level%d' %level]:
+            count[1] += len(Graph[point])
+
+    for level in range(0, Graph['level'] - 1):
         for hunter in Graph['level%d' %level]:
-            for preyLevel in range(level + 2, Graph['level'] + 1):
+            for preyLevel in range(level + 2, Graph['level']):
                 for prey in Graph['level%d' %preyLevel]:
-                    if random.randint(0, 100000) < possibility ** (preyLevel - level) * 1000:
+                    if random.randint(0, 100000) < (possibility / 100.0) ** (preyLevel - level) * 100 * 1000:
                         Graph[hunter].append(prey)
                         count[preyLevel - level] += 1
-    print count
+    print "Number of the relationship cross levels according to the levels it crosses\n", count
     return Graph
 
 def Cycle(level, num):
@@ -91,13 +113,13 @@ def Output(Graph):
         for i in Graph['level%d' %level]:
             for j in Graph[i]:
                 if j in Graph['level%d' %(level + 1)]:
-                    draw.line((co[i][0] + 50, co[i][1] + 50 , co[j][0] + 50, co[j][1] + 50), fill = (127, 40, 40), width = 10)
+                    draw.line((co[i][0] + 50, co[i][1] + 50 , co[j][0] + 50, co[j][1] + 50), fill = (127, 0, 0), width = 5)
                 else:
                     draw.line((co[i][0] + 50, co[i][1] + 50 , co[j][0] + 50, co[j][1] + 50), fill = (0, 0, 0), width = 10)
 
     image.save('output.jpg', 'jpeg')
-    #print Graph
+    print Graph
         
 #--main--
-k = float(raw_input('Base\n'))
-Output(Add(RandSwap(Generate(Read()), float(raw_input("Percentage"))), (k)))
+
+Output(Add(RandSwap(Generate(Read()), float(raw_input("Percentage(%)\n"))), float(raw_input('Base(%)\n'))))
