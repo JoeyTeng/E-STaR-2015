@@ -8,15 +8,15 @@ import matplotlib.pyplot as plt
 
 class listConductor(object):
     def __init__(self, input):
-        List = []
-        item = ''
-        quote = False
-        dQuote = False
-        comma = ','
-        squareBracket = False
-        bracket = False
-        brace = False
-        bSlant = False
+        self.List = []
+        self.item = ''
+        self.quote = False
+        self.dQuote = False
+        self.comma = ','
+        self.squareBracket = False
+        self.bracket = False
+        self.brace = False
+        self.bSlant = False
         return self.Conductor(input)
 
     def Conductor(self, input):
