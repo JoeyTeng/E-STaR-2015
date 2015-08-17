@@ -1,4 +1,5 @@
-
+#Generater a Food web
+#Output by a JPEG and a File
 
 from PIL import Image
 from PIL import ImageDraw
@@ -7,7 +8,7 @@ import re
 
 def Read():
     List = []
-    for num in re.sub(r'[ ]+', ' ', raw_input("delta list\n")).split(' '):
+    for num in re.search(r'(?:[\S]+.*[\S])|(?:[\S]+)', re.sub(r'[ ]+', ' ', raw_input("delta list\n"))).group(0).split(' '):
         List.append(int(num))
 
     return List
@@ -119,7 +120,35 @@ def Output(Graph):
 
     image.save('output.jpg', 'jpeg')
     print Graph
-        
+    return Graph
+
+def FileOutput(Graph):
+    output = open('output.txt', 'wb')
+    for item in Graph.items():
+        output.write("%r\n%r\n%r\n%r\n" %(type(item[0]), type(item[1]), item[0], item[1]))
+
+    return Graph
+
 #--main--
 
-Output(Add(RandSwap(Generate(Read()), float(raw_input("Percentage(%)\n"))), float(raw_input('Base(%)\n'))))
+FileOutput(
+        Output(
+            Add(
+                RandSwap(
+                    Generate(
+                        Read()
+                        ), 
+                    float(
+                        raw_input(
+                            "Percentage(%)\n"
+                            )
+                        )
+                    ), 
+                float(
+                    raw_input(
+                        'Base(%)\n'
+                        )
+                    )
+                )
+            )
+        )
