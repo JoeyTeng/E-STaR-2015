@@ -182,53 +182,96 @@ def FOutput(Match, path):
 
     return Match
 
+def MatchToPair(Match):
+    Pair = []
+    for result in Match:
+        for predator in range(0, len(result)):
+            for prey in result[predator]:
+                Pair.append((predator, prey))
+ 
+    print "Pair:"
+    print Pair
+    return Pair
+
+def PairCmp(A, B):
+    if (A[0] - B[0]):
+        return A[0] - B[0]
+    return A[1] - B[1]
+
+def Pick(Pair, PossibilityFunction):
+    index = random.sample(range(0, len(Pair)), PossibilityFunction(len(Pair)))
+    index.sort()
+    print "index:\n", index
+    Relation = []
+    for i in index:
+        Relation.append(Pair[i])
+
+    print "Relation:"
+    print Relation
+    return Relation
+
 #--main--
 
 #FileOutput(
 #        Output(
 if __name__ == '__main__':
-    FOutput(
-            Match(
-                Output(
-                    Add(
-                        RandSwap(
-                            Generate(
-                                Read()
+    Pick(
+        MatchToPair(
+            FOutput(
+                Match(
+                    Output(
+                        Add(
+                            RandSwap(
+                                Generate(
+                                    Read()
+                                    ), 
+                                float(
+                                    raw_input(
+                                        "Percentage(%)\n"
+                                        )
+                                    )
                                 ), 
                             float(
                                 raw_input(
-                                    "Percentage(%)\n"
+                                    'Base(%)\n'
                                     )
                                 )
-                            ), 
-                        float(
-                            raw_input(
-                                'Base(%)\n'
-                                )
-                            )
+                            ),
+                            'output1.jpg'
                         ),
-                        'output1.jpg'
+                    Output(
+                        Add(
+                            RandSwap(
+                                Generate(
+                                    Read()
+                                    ), 
+                                float(
+                                    raw_input(
+                                        "Percentage(%)\n"
+                                        )
+                                    )
+                                ), 
+                            float(
+                                raw_input(
+                                    'Base(%)\n'
+                                    )
+                                )
+                            ),
+                        'output2.jpg'
+                        )
                     ),
-                Output(
-                    Add(
-                        RandSwap(
-                            Generate(
-                                Read()
-                                ), 
-                            float(
-                                raw_input(
-                                    "Percentage(%)\n"
-                                    )
-                                )
-                            ), 
-                        float(
-                            raw_input(
-                                'Base(%)\n'
-                                )
-                            )
-                        ),
-                    'output2.jpg'
-                    )
-                ),
-            'output.txt'
+                'output.txt'
+                )
+            ), 
+        (
+            lambda(x): 
+            int(
+                float(
+                    raw_input(
+                        "picking possibility(%)\n"
+                        )
+                    ) / 100 * x
+                )
             )
+        )
+
