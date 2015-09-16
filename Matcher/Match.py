@@ -198,16 +198,26 @@ def PairCmp(A, B):
         return A[0] - B[0]
     return A[1] - B[1]
 
-def Pick(Pair, PossibilityFunction):
-    index = random.sample(range(0, len(Pair)), PossibilityFunction(len(Pair)))
+#def Pick(Pair, PossibilityFunction):
+#    index = random.sample(range(0, len(Pair)), PossibilityFunction(len(Pair)))
+def Pick(Match, PossibilityFunction):
+    index = random.sample(range(0, len(Match[0])), PossibilityFunction(len(Match[0])))
     index.sort()
     print "index:\n", index
     Relation = []
     for i in index:
-        Relation.append(Pair[i])
+#        Relation.append(Pair[i])
+        Relation.append((i, Match[0][i][random.randint(0, len(Match[0][i]))]))
 
     print "Relation:"
     print Relation
+    return Relation
+
+def FOutputPick(Relation, Path):
+    output = open(Path, 'wb')
+    for item in Relation:
+        output.write('%d %d\n' %(item[0], item[1]))
+    
     return Relation
 
 #--main--
@@ -215,8 +225,9 @@ def Pick(Pair, PossibilityFunction):
 #FileOutput(
 #        Output(
 if __name__ == '__main__':
-    Pick(
-        MatchToPair(
+    FOutputPick(
+        Pick(
+#        MatchToPair(
             FOutput(
                 Match(
                     Output(
@@ -261,17 +272,19 @@ if __name__ == '__main__':
                         )
                     ),
                 'output.txt'
+                ),
+#            ), 
+            (
+                lambda(x): 
+                int(
+                        float(
+                        raw_input(
+                            "picking possibility(%)\n"
+                            )
+                        ) / 100 * x
+                    )
                 )
-            ), 
-        (
-            lambda(x): 
-            int(
-                float(
-                    raw_input(
-                        "picking possibility(%)\n"
-                        )
-                    ) / 100 * x
-                )
-            )
+            ),
+            "Relation.out"
         )
 
