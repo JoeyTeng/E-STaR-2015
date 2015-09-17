@@ -3,3 +3,5 @@
 *output.txt
 *output*.jpg
 *.out
+*.tmp
+*Graph*.txt

@@ -95,7 +95,7 @@ def Add(Graph, possibility):
 def Cycle(level, num):
     return level * 500, num * 500, level * 500 + 100, num * 500 + 100
 
-def Output(Graph, path):
+def ImageOutput(Graph, path):
     Width = 0
     for level in range(0, Graph['level']):
         Width = max(Width, len(Graph['level%d' %level]))
@@ -124,8 +124,8 @@ def Output(Graph, path):
     print Graph
     return Graph
 
-def FileOutput(Graph):
-    output = open('output.txt', 'wb')
+def FileOutput(Graph, path):
+    output = open(path, 'wb')
     for item in Graph.items():
         output.write("%r\n%r\n%r\n%r\n" %(type(item[0]), type(item[1]), item[0], item[1]))
 
@@ -168,7 +168,7 @@ def Match(GraphA, GraphB):
 
     return Match
 
-def FOutput(Match, path):
+def FOutputMatch(Match, path):
     output = open(path, 'wb')
     for result in Match:
         for i in range(0, len(result)):
@@ -204,6 +204,7 @@ def Pick(Match, PossibilityFunction):
     index = random.sample(range(0, len(Match[0])), PossibilityFunction(len(Match[0])))
     index.sort()
     print "index:\n", index
+    print "Match:\n", Match
     Relation = []
     for i in index:
 #        Relation.append(Pair[i])
@@ -222,69 +223,10 @@ def FOutputPick(Relation, Path):
 
 #--main--
 
-#FileOutput(
-#        Output(
 if __name__ == '__main__':
-    FOutputPick(
-        Pick(
-#        MatchToPair(
-            FOutput(
-                Match(
-                    Output(
-                        Add(
-                            RandSwap(
-                                Generate(
-                                    Read()
-                                    ), 
-                                float(
-                                    raw_input(
-                                        "Percentage(%)\n"
-                                        )
-                                    )
-                                ), 
-                            float(
-                                raw_input(
-                                    'Base(%)\n'
-                                    )
-                                )
-                            ),
-                            'output1.jpg'
-                        ),
-                    Output(
-                        Add(
-                            RandSwap(
-                                Generate(
-                                    Read()
-                                    ), 
-                                float(
-                                    raw_input(
-                                        "Percentage(%)\n"
-                                        )
-                                    )
-                                ), 
-                            float(
-                                raw_input(
-                                    'Base(%)\n'
-                                    )
-                                )
-                            ),
-                        'output2.jpg'
-                        )
-                    ),
-                'output.txt'
-                ),
-#            ), 
-            (
-                lambda(x): 
-                int(
-                        float(
-                        raw_input(
-                            "picking possibility(%)\n"
-                            )
-                        ) / 100 * x
-                    )
-                )
-            ),
-            "Relation.out"
-        )
+    FOutputPick(Pick(FOutputMatch(Match(FileOutput(ImageOutput(Add(RandSwap(Generate(Read()),
+        float(raw_input("Percentage(%)\n"))), float(raw_input('Base(%)\n'))), 'output1.jpg'), 'Graph1.txt'),
+        FileOutput(ImageOutput(Add(RandSwap(Generate(Read()), float(raw_input("Percentage(%)\n"))), 
+            float(raw_input('Base(%)\n'))), 'output2.jpg'), 'Graph2.txt')), 'output.txt'),
+        (lambda(x): int(float(raw_input("picking possibility(%)\n")) / 100 * x))), "Relation.out")
 
