@@ -95,7 +95,7 @@ def Add(Graph, possibility):
 def Cycle(level, num):
     return level * 500, num * 500, level * 500 + 100, num * 500 + 100
 
-def Output(Graph):
+def ImageOutput(Graph):
     Width = 0
     for level in range(0, Graph['level']):
         Width = max(Width, len(Graph['level%d' %level]))
@@ -130,25 +130,25 @@ def FileOutput(Graph):
     return Graph
 
 #--main--
-
-FileOutput(
-        Output(
-            Add(
-                RandSwap(
-                    Generate(
-                        Read()
+if __name__ == '__main__':
+    FileOutput(
+            ImageOutput(
+                Add(
+                    RandSwap(
+                        Generate(
+                            Read()
+                            ), 
+                        float(
+                            raw_input(
+                                "Percentage(%)\n"
+                                )
+                            )
                         ), 
                     float(
                         raw_input(
-                            "Percentage(%)\n"
+                            'Base(%)\n'
                             )
-                        )
-                    ), 
-                float(
-                    raw_input(
-                        'Base(%)\n'
                         )
                     )
                 )
             )
-        )
