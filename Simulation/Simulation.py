@@ -38,9 +38,8 @@ def Calculation(Steps):
     return HistoryPopulation
 
 def main():
-    Calculation(int(raw_input('Please input steps of simulation:')))
+    return Calculation(int(raw_input('Please input steps of simulation:')))
 
-    return 0
 
 #--main--
 

@@ -130,7 +130,8 @@ def FileOutput(Graph):
     return Graph
 
 def main():
-    FileOutput(
+    return\
+        FileOutput(
             ImageOutput(
                 Add(
                     RandSwap(
@@ -151,8 +152,6 @@ def main():
                     )
                 )
             )
-
-    return 0
 
 #--main--
 if __name__ == '__main__':
