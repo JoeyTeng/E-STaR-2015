@@ -5,3 +5,4 @@
 *.out
 *.tmp
 *Graph*.txt
+*.pyc
