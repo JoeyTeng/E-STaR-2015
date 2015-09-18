@@ -129,8 +129,7 @@ def FileOutput(Graph):
 
     return Graph
 
-#--main--
-if __name__ == '__main__':
+def main():
     FileOutput(
             ImageOutput(
                 Add(
@@ -152,3 +151,9 @@ if __name__ == '__main__':
                     )
                 )
             )
+
+    return 0
+
+#--main--
+if __name__ == '__main__':
+    main()

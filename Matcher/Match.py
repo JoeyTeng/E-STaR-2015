@@ -221,12 +221,17 @@ def FOutputPick(Relation, Path):
     
     return Relation
 
-#--main--
-
-if __name__ == '__main__':
+def main():
     FOutputPick(Pick(FOutputMatch(Match(FileOutput(ImageOutput(Add(RandSwap(Generate(Read()),
         float(raw_input("Percentage(%)\n"))), float(raw_input('Base(%)\n'))), 'output1.jpg'), 'Graph1.txt'),
         FileOutput(ImageOutput(Add(RandSwap(Generate(Read()), float(raw_input("Percentage(%)\n"))), 
             float(raw_input('Base(%)\n'))), 'output2.jpg'), 'Graph2.txt')), 'output.txt'),
         (lambda(x): int(float(raw_input("picking possibility(%)\n")) / 100 * x))), "Relation.out")
+
+    return 0
+
+#--main--
+
+if __name__ == '__main__':
+    main()
 
