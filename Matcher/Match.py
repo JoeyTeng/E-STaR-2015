@@ -201,7 +201,8 @@ def PairCmp(A, B):
 #def Pick(Pair, PossibilityFunction):
 #    index = random.sample(range(0, len(Pair)), PossibilityFunction(len(Pair)))
 def Pick(Match, PossibilityFunction):
-    index = random.sample(range(0, len(Match[0])), PossibilityFunction(len(Match[0])))
+    Possibility = PossibilityFunction(len(Match[0]))
+    index = random.sample(range(0, len(Match[0])), Possibility)
     index.sort()
     print "index:\n", index
     print "Match:\n", Match
@@ -221,15 +222,22 @@ def FOutputPick(Relation, Path):
     
     return Relation
 
+PickingPossibilityFunction = (lambda(x): int(float(raw_input("Picking possibility(%):\n") / 100 * x)))
+
+def NoProcessOutput(Graph1, Graph2):
+    return Pick(Match(Graph1, Graph2), PickingPossibilityFunction), 
+
+def Default(Graph1, Graph2):
+    return (FOutputPick(Pick(FOutputMatch(Match(Graph1, Graph2), 'Match.Output.txt'),
+        (PickingPossibilityFunction)), "Relation.out"))
+
 def main():
     return\
         FOutputPick(Pick(FOutputMatch(Match(FileOutput(ImageOutput(Add(RandSwap(Generate(Read()),
             float(raw_input("Percentage(%)\n"))), float(raw_input('Base(%)\n'))), 'output1.jpg'), 'Graph1.txt'),
             FileOutput(ImageOutput(Add(RandSwap(Generate(Read()), float(raw_input("Percentage(%)\n"))), 
             float(raw_input('Base(%)\n'))), 'output2.jpg'), 'Graph2.txt')), 'output.txt'),
-            (lambda(x): int(float(raw_input("picking possibility(%)\n")) / 100 * x))), "Relation.out")
-
-    return 0
+            (PickingPossibilityFunction)), "Relation.out")
 
 #--main--
 
