@@ -95,7 +95,7 @@ def Add(Graph, possibility):
 def Cycle(level, num):
     return level * 500, num * 500, level * 500 + 100, num * 500 + 100
 
-def ImageOutput(Graph):
+def ImageOutput(Graph, path):
     Width = 0
     for level in range(0, Graph['level']):
         Width = max(Width, len(Graph['level%d' %level]))
@@ -118,18 +118,26 @@ def ImageOutput(Graph):
                 else:
                     draw.line((co[i][0] + 50, co[i][1] + 50 , co[j][0] + 50, co[j][1] + 50), fill = (0, 0, 0), width = 10)
 
-    image.save('output.jpg', 'jpeg')
+    image.save(path + '.jpg', 'jpeg')
     print Graph
     return Graph
 
-def FileOutput(Graph):
-    output = open('output.txt', 'wb')
+def FileOutput(Graph, path):
+    output = open(path + '.txt', 'wb')
     for item in Graph.items():
         output.write("%r\n%r\n%r\n%r\n" %(type(item[0]), type(item[1]), item[0], item[1]))
 
     return Graph
 
-def main():
+def RelationOutput(Graph, path):
+    output = open(path + '.txt', 'wb')
+    for predator in range(1, Graph['total'] + 1):
+        output.write('%d will eat: [' %predator)
+        for prey in Graph[predator]:
+            output.write('%d ' %prey)
+        output.write(']\n')
+
+def main(path):
     return\
         FileOutput(
             ImageOutput(
@@ -149,10 +157,12 @@ def main():
                             'Base(%)\n'
                             )
                         )
-                    )
-                )
+                    ),
+                    path
+                ),
+                path
             )
 
 #--main--
 if __name__ == '__main__':
-    main()
+    RelationOutput(main('output'), 'relation')
