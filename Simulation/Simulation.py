@@ -1,44 +1,135 @@
 #Simulation via formula, parameter of vectors and matrixes.
 #--coding:utf-8--
-#Vectors:
-Population = [] #n
-IntrinsicGrowthRate = [] #µ
-MaxPopulation = [] #N
-DeathRate = [] #λ
-ConversionRate = [] #s, σ
-#Matrixes:
-HistoryPopulation = [] #n(t)
-PredationEfficiency = [] #A, α
+import copy
+
+class dataClass(object):
+    #Vectors:
+    Population = [] #n
+    IntrinsicGrowthRate = [] #µ
+    MaxPopulation = [] #N
+    DeathRate = [] #λ
+    ConversionRate = [] #s, σ
+    #Matrixes:
+    HistoryPopulation = [] #n(t)
+    PredationEfficiency = [] #A, α
+    def __init__(self):
+        pass
+    
+    def initialize(self, Graph):
+        self.Population = [0] + [-1] * Graph['total']
+        self.IntrinsicGrowthRate = [0] + [0] * (Graph['total'] - len(Graph['level%d' %(Graph['level'] - 1)])) + [-1] * (len(Graph['level%d' %(Graph['level'] - 1)]))
+        self.MaxPopulation = copy.deepcopy(self.Population)
+        self.DeathRate = copy.deepcopy(self.Population)
+        self.ConversionRate = [0] + [-1] * (Graph['total'] - len(Graph['level%d' %(Graph['level'] - 1)])) + [0] * (len(Graph['level%d' %(Graph['level'] - 1)]))
+        self.HistoryPopulation = []
+
+        self.PredationEfficiency = [0] * (Graph['total'] - len(Graph['level%d' %(Graph['level'] - 1)])) + [0] * (len(Graph['level%d' %(Graph['level'] - 1)]) + 1)
+        tmp =  copy.deepcopy(self.PredationEfficiency) 
+        self.PredationEfficiency = []
+        for i in range(0, (Graph['total'] + 1)):
+            self.PredationEfficiency.append(copy.deepcopy(tmp))
+
+        for pradter in range(1, Graph['level']):
+            for prey in Graph[pradter]:
+                self.PredationEfficiency[pradter][prey] = -1
+                print
+                #self.PredationEfficiency[prey][pradter] = -1
+
+
+    def input(self):
+        print "\nPopulation"
+        for i in range(0, len(self.Population)):
+            if (self.Population[i] == -1):
+                self.Population[i] = float(raw_input("%d: " %i))
+                #self.Population[i] = tmp
+
+        print "\nIntrinsic Growth Rate"
+        tmp = float(raw_input())
+        for i in range(0, len(self.IntrinsicGrowthRate)):
+            if (self.IntrinsicGrowthRate[i] == -1):
+                self.IntrinsicGrowthRate[i] = tmp #float(raw_input("%d: " %i))
+
+        print "\nMax Population"
+        tmp = float(raw_input())
+        for i in range(0, len(self.MaxPopulation)):
+            if (self.MaxPopulation[i] == -1):
+                self.MaxPopulation[i] = tmp #float(raw_input("%d: " %i))
+
+        print "\nDeath Rate"
+        tmp = float(raw_input())
+        for i in range(0, len(self.DeathRate)):
+            if (self.DeathRate[i] == -1):
+                self.DeathRate[i] = tmp #float(raw_input("%d: " %i))
+
+        print "\nConversion Rate"
+        tmp = float(raw_input())
+        for i in range(0, len(self.ConversionRate)):
+            if (self.ConversionRate[i] == -1):
+                self.ConversionRate[i] = tmp #float(raw_input("%d: " %i))
+
+        print "Predation Efficiency"
+        tmp = float(raw_input())
+        for i in range(0, len(self.PredationEfficiency)):
+            for j in range(0, len(self.PredationEfficiency[i])):
+                if (self.PredationEfficiency[i][j] == -1):
+                    self.PredationEfficiency[i][j] = tmp #float(raw_input("%d -> %d: " %(i, j)))
+
 
 #Formula:
 #n[i][t + 1] = n[i][t] - lambda[i]*n[i][t] + mu[i] * n[i][t] * (1 - n[i][t]/N[i]) 
 #   + sigma[i] * SUM(1, j, lambda(i, j): alpha[i][j] * n[i][t] * n[j][t]) 
 #   - SUM(i, j, lambda(i, j): alpha[j][i] * n[j][t] * n[i][t])
-def Step(Population):
-    NewPopulation = []
-    for i in range(0, len(Population)):
-        NewPopulation[i] = Population[i] - DeathRate[i] * Population[i] + IntrinsicGrowthRate[i] * Population[i] * (1 - Population[i] / MaxPopulation[i])\
-            + ConversionRate[i] * Sum(i, (lambda(j): PredationEfficiency[i][j] * Population[i] * Population[j]))\
-            - Sum(len(Population), (lambda(j): PredationEfficiency[j][i] * Population[j] * Population[i]))
+def Step(data):
+    NewPopulation = [0]*len(data.Population)
+    for i in range(1, len(data.Population)):
+        """NewPopulation[i] = data.Population[i] - data.DeathRate[i] * data.Population[i]\
+            + data.IntrinsicGrowthRate[i] * data.Population[i] * (1 - data.Population[i] / data.MaxPopulation[i])\
+            + data.ConversionRate[i] * Sum(i, len(data.Population), (lambda(j): data.PredationEfficiency[i][j] * data.Population[i] * data.Population[j]))\
+            - Sum(len(data.Population), (lambda(j): data.PredationEfficiency[j][i] * data.Population[j] * data.Population[i]))"""
+        a = data.DeathRate[i] * data.Population[i]
+        b = data.IntrinsicGrowthRate[i] * data.Population[i] * (1 - data.Population[i] / data.MaxPopulation[i])
+        c = data.ConversionRate[i] * Sum(i, len(data.Population), (lambda(j): data.PredationEfficiency[i][j] * data.Population[i] * data.Population[j]))
+        d = Sum(0, i, (lambda(j): data.PredationEfficiency[j][i] * data.Population[j] * data.Population[i]))
+        NewPopulation[i] = data.Population[i] - a + b + c - d
+        NewPopulation[i] = max(NewPopulation[i], 0)
+#        print "History %r; Death %r; Grow %r; Eat %r; Eaten %r" %(data.Population[i], a, b, c, d)
 
     return NewPopulation
 
-def Sum(maximum, expression):
+def Sum(minimum, maximum, expression):
     Ans = 0
-    for j in range(0, maximum):
+    for j in range(minimum, maximum):
         Ans += expression(j)
 
     return Ans
 
-def Calculation(Steps):
+def Calculation(data, Steps):
+    print "\nRunning %d steps" %Steps
+    data.HistoryPopulation.append(data.Population)
     for t in range(0, Steps):
-        Population = HistoryPopulation[t]
-        HistoryPopulation.append(Step(Population))
+        data.Population = data.HistoryPopulation[t]
+        data.HistoryPopulation.append(Step(data))
 
-    return HistoryPopulation
+    return data.HistoryPopulation
 
-def main():
-    return Calculation(int(raw_input('Please input steps of simulation:')))
+def main(Graph):
+    data = dataClass()
+    data.initialize(Graph)
+    data.input()
+
+    print "Population\n", data.Population
+    print "IG:\n", data.IntrinsicGrowthRate
+    print "Max:\n", data.MaxPopulation
+    print "Death:\n", data.DeathRate
+    print "Conv:\n", data.ConversionRate
+    print "His:\n", data.HistoryPopulation
+    print "Matrix:\n"
+    for line in data.PredationEfficiency:
+        print line
+
+    print ""
+
+    return Calculation(data, int(raw_input('Please input steps of simulation:')))
 
 
 #--main--
