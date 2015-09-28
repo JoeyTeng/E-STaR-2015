@@ -43,4 +43,9 @@ Here are some experience I found or realized during or after successfully genera
     - All high will lead to high amplitude, or, crash.
     - All low will lead to constant system.
 
+###Phenomenon
+- Plants will recover only after they are below 1, approach to 0. Maybe because same death rate and high Increasing rate[^2] of predator.
+
+[^2]: Increasing rate = Conversion Rate * Predation Efficiency.
+
 (28 Sep 2015 by Joey Teng)
