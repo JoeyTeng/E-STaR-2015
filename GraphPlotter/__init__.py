@@ -1,1 +1,1 @@
-import GraphPlotter
+from GraphPlotter import *

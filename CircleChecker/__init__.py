@@ -1,1 +1,1 @@
-import CircleChecker
+from CircleChecker import *

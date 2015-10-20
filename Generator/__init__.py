@@ -1,1 +1,1 @@
-import Generator
+from Generator import *

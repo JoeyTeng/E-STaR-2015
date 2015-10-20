@@ -1,1 +1,1 @@
-import Match
+from Match import *
