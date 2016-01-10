@@ -8,30 +8,30 @@ def OutputErr(content):
 
 def main():
 
-    OutputErr("Start Graph")
+#    OutputErr("Start Graph")
     Graph1 = __init__.Generator.main("Graph1")
-    OutputErr("Fin")
+#    OutputErr("Fin")
     #Graph2 = __init__.Generator.main("Graph2")
 
     #match = __init__.Match.Default(Graph1, Graph2)
 
-    OutputErr("Start Simulate")
+#    OutputErr("Start Simulate")
     History = __init__.Simulation.main(Graph1)
-    OutputErr("Fin")
+#    OutputErr("Fin")
     output = open("data.csv", 'wb')
     print ""
 
-    OutputErr("Start Check")
+#    OutputErr("Start Check")
     print "Period ", __init__.CircleChecker.main(History), '\n'
-    OutputErr("Fin")
+#    OutputErr("Fin")
 
-    OutputErr("Start Output")
+#    OutputErr("Start Output")
     for line in History:
         print line[1:]
         for i in line[1:]:
             output.write("%r," %i)
         output.write('\n')
-    OutputErr("Fin")
+#    OutputErr("Fin")
 
 if __name__ == "__main__":
     main()

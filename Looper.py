@@ -13,9 +13,6 @@ def Get():
     for line in input:
         if line[:6] == 'Period':
             string = line
-            print string
-            print string.find('(') + 1
-            print string.find(',')
             period = int(string[string.find('(') + 1: string.find(',')])
             if period > 100:
                 return True
@@ -80,6 +77,7 @@ def run():
             output.close()
 
         os.chdir('..')
+        print count
 
 if __name__ == "__main__":
     run()
