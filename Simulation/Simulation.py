@@ -69,9 +69,9 @@ class dataClass(object):
 
         print "Predation Efficiency"
         for i in range(0, len(self.PredationEfficiency)):
-            tmp = float(raw_input("predator %d: "%i))
             for j in range(0, len(self.PredationEfficiency[i])):
                 if (self.PredationEfficiency[i][j] == -1):
+                    tmp = float(raw_input("predator %d: "%i))
                     self.PredationEfficiency[i][j] = tmp #float(raw_input("%d -> %d: " %(i, j)))
 
 

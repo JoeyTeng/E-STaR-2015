@@ -5,20 +5,31 @@ def main(History):
     count = 0
     second = []
     period = 0
+    next = []
     for item in History:
         key = tuple(item)
         try:
             Dict[key] += 1
             second = item
-            if period == 0:
-                period = count
-            else:
-                break
+            break
         except:
             Dict[key] = 1
         count += 1
+        
+    next.append(count)
+    while period == 0:
+        count += 1
+        for item in History[count:]:
+            if item == second:
+                next.append(count)
+                break
+            count += 1
+        if len(next) > 2:
+            for i in range(len(next) - 1, 2, -1):
+                if next[i] + next[i - 2] == 2*next[i - 1]:
+                    period = next[i] - next[i - 1]
 
-    return period, count, second
+    return period, next, count, second
 
 #--main--
 
