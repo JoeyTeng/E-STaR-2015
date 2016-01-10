@@ -10,13 +10,15 @@ def main(History):
         try:
             Dict[key] += 1
             second = item
-            period = count
-            break
+            if period == 0:
+                period = count
+            else:
+                break
         except:
             Dict[key] = 1
         count += 1
 
-    return count, second
+    return period, count, second
 
 #--main--
 
