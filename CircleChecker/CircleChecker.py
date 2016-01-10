@@ -17,7 +17,7 @@ def main(History):
         count += 1
         
     next.append(count)
-    while period == 0:
+    while period == 0 and count < len(History):
         count += 1
         for item in History[count:]:
             if item == second:
