@@ -49,7 +49,7 @@ def Generator(content):
         except KeyError:
             dictionary[tmp] = True
         for index in xrange(0, len(i)):
-            i[index] *= exponent[i]
+            i[index] *= exponent[index]
         for a in i:
             result.append(str(a) + '\n')
         result.append(content[-2])
