@@ -18,7 +18,7 @@ class dataClass(object):
     def initialize(self, Graph):
         self.Population = [0] + [-1] * Graph['total']
         self.IntrinsicGrowthRate = [0] + [0] * (Graph['total'] - len(Graph['level%d' %(Graph['level'] - 1)])) + [-1] * (len(Graph['level%d' %(Graph['level'] - 1)]))
-        self.MaxPopulation = copy.deepcopy(self.Population)
+        self.MaxPopulation = copy.deepcopy(self.IntrinsicGrowthRate)
         self.DeathRate = copy.deepcopy(self.Population)
         self.ConversionRate = [0] + [-1] * (Graph['total'] - len(Graph['level%d' %(Graph['level'] - 1)])) + [0] * (len(Graph['level%d' %(Graph['level'] - 1)]))
         self.HistoryPopulation = []
@@ -28,7 +28,7 @@ class dataClass(object):
         self.PredationEfficiency = []
         for i in xrange(0, (Graph['total'] + 1)):
             self.PredationEfficiency.append(copy.deepcopy(tmp))
-        for predaterLevel in xrange(1, Graph['level']):
+        for predaterLevel in xrange(0, Graph['level']):
             for predater in Graph['level%d' %predaterLevel]:
                 for prey in Graph[predater]:
                     self.PredationEfficiency[predater][prey] = -1
