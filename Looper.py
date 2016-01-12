@@ -1,6 +1,7 @@
 import os
 import re
 import sys
+import random
 from callable import *
 
 Flag = True
@@ -19,29 +20,47 @@ def Get():
     return False
 
 def Generator(content):
-    i = [0] * 9
-    for i[0] in xrange(10, 100, 10):
-        for i[1] in xrange(10, 1000, 10):
-            for i[2] in xrange(10, 1000, 10):
-                for jtmp in xrange(1, 10):
-                    i[3] = jtmp / 10.0
-                    for i[4] in xrange(((max(i) + 99)/100) * 100, 5000, 100):
-                        for ltmp in xrange(1, 10):
-                            i[5] = ltmp / 10.0
-                            for mtmp in xrange(1, 10):
-                                i[6] = mtmp / 10.0
-                                for n1tmp in xrange(1, 10):
-                                    i[7] = n1tmp / 1000.0
-                                    for n2tmp in xrange(1, 10):
-                                        i[8] = n2tmp / 1000.0
-                                        result = content[:3]
-                                        for a in i:
-                                            result.append(str(a) + '\n')
-                                        result.append(content[-2])
-                                        result.append(content[-1])
-                                        print result
-                                        yield result
-    Flag = False
+    global dictionary
+    dictionary = {}
+    exponent = [10] * 1 + [10] * 2 + [50] * 4 + [100] * 3 + [0.1] + [100] + [0.1] * 2 + [0.001] * 8
+    signficand = [10] * len(exponent)
+    i = [0] * len(exponent)
+    while True:
+        try:
+            count = count
+        except UnboundLocalError:
+            count = 0
+        for index in xrange(0, len(i)):
+            i[index] = random.randint(1, signficand[index] - 1)
+        result = content[:3]
+        tmp = 0
+        for index in xrange(0, len(i)):
+            t = i[index] * exponent[index]
+            tmp *= signficand[index]
+            tmp += t
+        try:
+            dictionary[tmp]
+            count += 1
+            if count > 1000:
+                global Flag
+                Flag = False
+                return
+            continue
+        except KeyError:
+            dictionary[tmp] = True
+        for index in xrange(0, len(i)):
+            i[index] *= exponent[index]
+        if max(i) > i[11]:
+            print max(i), i[11], " Illegal!"
+            count = 0
+            continue
+        for a in i:
+            result.append(str(a) + '\n')
+        result.append(content[-2])
+        result.append(content[-1])
+        print result
+        count = 0
+        yield result
 
 def Change(path, content, G):
     output = open(path, 'wb')
@@ -56,6 +75,7 @@ def run():
     os.mkdir('result.tmp')
     os.chdir('result.tmp')
     count = 0
+    global Flag
     while Flag:
         count += 1
         os.mkdir(str(count))
