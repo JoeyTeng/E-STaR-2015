@@ -26,52 +26,50 @@ class dataClass(object):
         self.PredationEfficiency = [0] * (Graph['total'] - len(Graph['level%d' %(Graph['level'] - 1)])) + [0] * (len(Graph['level%d' %(Graph['level'] - 1)]) + 1)
         tmp =  copy.deepcopy(self.PredationEfficiency) 
         self.PredationEfficiency = []
-        for i in range(0, (Graph['total'] + 1)):
+        for i in xrange(0, (Graph['total'] + 1)):
             self.PredationEfficiency.append(copy.deepcopy(tmp))
-
-        for pradter in range(1, Graph['level']):
-            for prey in Graph[pradter]:
-                self.PredationEfficiency[pradter][prey] = -1
-                print
-                #self.PredationEfficiency[prey][pradter] = -1
+        for predaterLevel in xrange(1, Graph['level']):
+            for predater in Graph['level%d' %predaterLevel]:
+                for prey in Graph[predater]:
+                    self.PredationEfficiency[predater][prey] = -1
 
 
     def input(self):
         print "\nPopulation"
-        for i in range(0, len(self.Population)):
+        for i in xrange(0, len(self.Population)):
             if (self.Population[i] == -1):
                 self.Population[i] = float(raw_input("%d: " %i))
                 #self.Population[i] = tmp
 
         print "\nIntrinsic Growth Rate"
-        tmp = float(raw_input())
-        for i in range(0, len(self.IntrinsicGrowthRate)):
+        for i in xrange(0, len(self.IntrinsicGrowthRate)):
             if (self.IntrinsicGrowthRate[i] == -1):
+                tmp = float(raw_input("%d: " %i))
                 self.IntrinsicGrowthRate[i] = tmp #float(raw_input("%d: " %i))
 
         print "\nMax Population"
-        tmp = float(raw_input())
-        for i in range(0, len(self.MaxPopulation)):
+        for i in xrange(0, len(self.MaxPopulation)):
             if (self.MaxPopulation[i] == -1):
+                tmp = float(raw_input("%d: " %i))
                 self.MaxPopulation[i] = tmp #float(raw_input("%d: " %i))
 
         print "\nDeath Rate"
-        tmp = float(raw_input())
-        for i in range(0, len(self.DeathRate)):
+        for i in xrange(0, len(self.DeathRate)):
             if (self.DeathRate[i] == -1):
+                tmp = float(raw_input("%d: " %i))
                 self.DeathRate[i] = tmp #float(raw_input("%d: " %i))
 
         print "\nConversion Rate"
-        tmp = float(raw_input())
-        for i in range(0, len(self.ConversionRate)):
+        for i in xrange(0, len(self.ConversionRate)):
             if (self.ConversionRate[i] == -1):
+                tmp = float(raw_input("%d: " %i))
                 self.ConversionRate[i] = tmp #float(raw_input("%d: " %i))
 
         print "Predation Efficiency"
-        for i in range(0, len(self.PredationEfficiency)):
-            for j in range(0, len(self.PredationEfficiency[i])):
+        for i in xrange(0, len(self.PredationEfficiency)):
+            for j in xrange(0, len(self.PredationEfficiency[i])):
                 if (self.PredationEfficiency[i][j] == -1):
-                    tmp = float(raw_input("predator %d: "%i))
+                    tmp = float(raw_input("predator %d->%d: " %(i, j)))
                     self.PredationEfficiency[i][j] = tmp #float(raw_input("%d -> %d: " %(i, j)))
 
 
@@ -81,7 +79,7 @@ class dataClass(object):
 #   - SUM(i, j, lambda(i, j): alpha[j][i] * n[j][t] * n[i][t])
 def Step(data):
     NewPopulation = [0]*len(data.Population)
-    for i in range(1, len(data.Population)):
+    for i in xrange(1, len(data.Population)):
         """NewPopulation[i] = data.Population[i] - data.DeathRate[i] * data.Population[i]\
             + data.IntrinsicGrowthRate[i] * data.Population[i] * (1 - data.Population[i] / data.MaxPopulation[i])\
             + data.ConversionRate[i] * Sum(i, len(data.Population), (lambda(j): data.PredationEfficiency[i][j] * data.Population[i] * data.Population[j]))\
@@ -98,7 +96,7 @@ def Step(data):
 
 def Sum(minimum, maximum, expression):
     Ans = 0
-    for j in range(minimum, maximum):
+    for j in xrange(minimum, maximum):
         Ans += expression(j)
 
     return Ans
@@ -106,7 +104,7 @@ def Sum(minimum, maximum, expression):
 def Calculation(data, Steps):
     print "\nRunning %d steps" %Steps
     data.HistoryPopulation.append(data.Population)
-    for t in range(0, Steps):
+    for t in xrange(0, Steps):
         data.Population = data.HistoryPopulation[t]
         data.HistoryPopulation.append(Step(data))
 
