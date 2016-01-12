@@ -22,8 +22,8 @@ def Get():
 def Generator(content):
     global dictionary
     dictionary = {}
-    exponent = [10, 100, 100, 0.1, 100, 0.1, 0.1, 0.001, 0.001]
-    signficand = [10, 10, 10, 10, 50, 10, 10, 10, 10]
+    exponent = [10] * 1 + [10] * 2 + [50] * 4 + [100] * 3 + [0.1] + [100] + [0.1] * 2 + [0.001] * 8
+    signficand = [10] * len(exponent)
     i = [0] * len(exponent)
     while True:
         try:
@@ -50,6 +50,10 @@ def Generator(content):
             dictionary[tmp] = True
         for index in xrange(0, len(i)):
             i[index] *= exponent[index]
+        if max(i) > i[11]:
+            print max(i), i[11], " Illegal!"
+            count = 0
+            continue
         for a in i:
             result.append(str(a) + '\n')
         result.append(content[-2])
