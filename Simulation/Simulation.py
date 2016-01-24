@@ -37,21 +37,29 @@ class dataClass(object):
     def input(self):
         print "\nClone List:"
         cloneList = []
-        CheckDict = {}
+        checkDict = {}
         initPop = []
         intGrRate = []
         deathRate = []
         converRate = []
-        cloneList = map(eval, raw_input().split())
+        cloneList = map(int, raw_input().split())
         if cloneList:
-            initPop = map(eval, raw_input("\nInit Pop:").split())
-            intGrRate = map(eval, raw_input("\nintGrRate:").split())
-            deathRate = map(eval, raw_input("\nDeath Rate:").split())
-            converRate = map(eval, raw_input("\nConversion Rate:").split())
+            initPop = map(float, raw_input("\nInit Pop:").split())
+            intGrRate = map(float, raw_input("\nintGrRate:").split())
+            deathRate = map(float, raw_input("\nDeath Rate:").split())
+            converRate = map(float, raw_input("\nConversion Rate:").split())
             Addition = range(len(self.Population), len(self.Population) + len(cloneList))
             for i in xrange(0, len(Addition)):
-                checkList[Addition[i]] = cloneList[i]
-                checkList[cloneList[i]] = Addition[i]
+                checkDict[Addition[i]] = cloneList[i]
+                checkDict[cloneList[i]] = Addition[i]
+        print "\ncloneList:\n", cloneList
+        print "checkDict:\n", checkDict
+        print "initPop:\n", initPop
+        print "intGrRate:\n", intGrRate
+        print "deathRate:\n", deathRate
+        print "converRate:\n", converRate
+        print "Addition:\n", Addition
+        print
 
         print "\nPopulation"
         for i in xrange(0, len(self.Population)):
@@ -60,6 +68,7 @@ class dataClass(object):
                 #self.Population[i] = tmp
         for i in initPop:
             self.Population.append(i)
+        print "\nPopulation:\n", self.Population
 
         for i in xrange(0, len(cloneList)):
             if self.IntrinsicGrowthRate[cloneList[i]] != -1:
@@ -70,7 +79,8 @@ class dataClass(object):
                 tmp = float(raw_input("%d: " %i))
                 self.IntrinsicGrowthRate[i] = tmp #float(raw_input("%d: " %i))
         for i in intGrRate:
-            self.IntrinsicGrowthRate.append[i]
+            self.IntrinsicGrowthRate.append(i)
+        print "\nIntrinsicGrowthRate:\n", self.IntrinsicGrowthRate
 
         print "\nMax Population"
         for i in xrange(0, len(self.MaxPopulation)):
@@ -80,7 +90,8 @@ class dataClass(object):
                 tmp = float(raw_input("%d: " %i))
                 self.MaxPopulation[i] = tmp #float(raw_input("%d: " %i))
         for i in cloneList:
-            self.MaxPopulation.append(self.MaxPopulation[cloneList[i]])
+            self.MaxPopulation.append(self.MaxPopulation[i])
+        print "\nMaxPopulation:\n", self.MaxPopulation
 
         print "\nDeath Rate"
         for i in xrange(0, len(self.DeathRate)):
@@ -89,6 +100,7 @@ class dataClass(object):
                 self.DeathRate[i] = tmp #float(raw_input("%d: " %i))
         for i in deathRate:
             self.DeathRate.append(i)
+        print "\nDeathRate:\n", self.DeathRate
 
         print "\nConversion Rate"
         for i in xrange(0, len(self.ConversionRate)):
@@ -97,8 +109,9 @@ class dataClass(object):
                 self.ConversionRate[i] = tmp #float(raw_input("%d: " %i))
         for i in converRate:
             self.ConversionRate.append(i)
+        print "\nConversionRate:\n", self.ConversionRate
 
-        print "Predation Efficiency"
+        print "\nPredation Efficiency"
         for i in xrange(0, len(cloneList)):
             for j in self.PredationEfficiency:
                 j.append(0)
@@ -110,13 +123,14 @@ class dataClass(object):
                     tmp = float(raw_input("predator %d->%d: " %(i, j)))
                     self.PredationEfficiency[i][j] = tmp #float(raw_input("%d -> %d: " %(i, j)))
                     try:
-                        self.PredationEfficiency[i][checkList[j]] = tmp
-                    except:
+                        self.PredationEfficiency[i][checkDict[j]] = tmp
+                    except KeyError:
                         pass
                     try:
-                        self.PredationEfficiency[checkList[i]][j] = tmp
-                    except:
+                        self.PredationEfficiency[checkDict[i]][j] = tmp
+                    except KeyError:
                         pass
+        print "\nPredationEfficiency:\n", self.PredationEfficiency
 
 #Formula:
 #n[i][t + 1] = n[i][t] - lambda[i]*n[i][t] + mu[i] * n[i][t] * (1 - n[i][t]/N[i]) 
@@ -131,8 +145,8 @@ def Step(data):
             - Sum(len(data.Population), (lambda(j): data.PredationEfficiency[j][i] * data.Population[j] * data.Population[i]))"""
         a = data.DeathRate[i] * data.Population[i]
         b = data.IntrinsicGrowthRate[i] * data.Population[i] * (1 - data.Population[i] / data.MaxPopulation[i])
-        c = data.ConversionRate[i] * Sum(i, len(data.Population), (lambda(j): data.PredationEfficiency[i][j] * data.Population[i] * data.Population[j]))
-        d = Sum(0, i, (lambda(j): data.PredationEfficiency[j][i] * data.Population[j] * data.Population[i]))
+        c = data.ConversionRate[i] * Sum(0, len(data.Population), (lambda(j): data.PredationEfficiency[i][j] * data.Population[i] * data.Population[j]))
+        d = Sum(0, len(data.Population), (lambda(j): data.PredationEfficiency[j][i] * data.Population[j] * data.Population[i]))
         NewPopulation[i] = data.Population[i] - a + b + c - d
         NewPopulation[i] = max(NewPopulation[i], 0)
 #        print "History %r; Death %r; Grow %r; Eat %r; Eaten %r" %(data.Population[i], a, b, c, d)
