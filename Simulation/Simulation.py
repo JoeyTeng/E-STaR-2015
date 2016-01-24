@@ -35,43 +35,86 @@ class dataClass(object):
 
 
     def input(self):
+        print "\nClone List:"
+        cloneList = []
+        CheckDict = {}
+        initPop = []
+        intGrRate = []
+        deathRate = []
+        converRate = []
+        cloneList = map(eval, raw_input().split())
+        if cloneList:
+            initPop = map(eval, raw_input("\nInit Pop:").split())
+            intGrRate = map(eval, raw_input("\nintGrRate:").split())
+            deathRate = map(eval, raw_input("\nDeath Rate:").split())
+            converRate = map(eval, raw_input("\nConversion Rate:").split())
+            Addition = range(len(self.Population), len(self.Population) + len(cloneList))
+            for i in xrange(0, len(Addition)):
+                checkList[Addition[i]] = cloneList[i]
+                checkList[cloneList[i]] = Addition[i]
+
         print "\nPopulation"
         for i in xrange(0, len(self.Population)):
             if (self.Population[i] == -1):
                 self.Population[i] = float(raw_input("%d: " %i))
                 #self.Population[i] = tmp
+        for i in initPop:
+            self.Population.append(i)
 
+        for i in xrange(0, len(cloneList)):
+            if self.IntrinsicGrowthRate[cloneList[i]] != -1:
+                intGrRate[i] = 0
         print "\nIntrinsic Growth Rate"
         for i in xrange(0, len(self.IntrinsicGrowthRate)):
             if (self.IntrinsicGrowthRate[i] == -1):
                 tmp = float(raw_input("%d: " %i))
                 self.IntrinsicGrowthRate[i] = tmp #float(raw_input("%d: " %i))
+        for i in intGrRate:
+            self.IntrinsicGrowthRate.append[i]
 
         print "\nMax Population"
         for i in xrange(0, len(self.MaxPopulation)):
             if (self.MaxPopulation[i] == -1):
                 tmp = float(raw_input("%d: " %i))
                 self.MaxPopulation[i] = tmp #float(raw_input("%d: " %i))
+        for i in cloneList:
+            self.MaxPopulation.append(self.MaxPopulation[cloneList[i]])
 
         print "\nDeath Rate"
         for i in xrange(0, len(self.DeathRate)):
             if (self.DeathRate[i] == -1):
                 tmp = float(raw_input("%d: " %i))
                 self.DeathRate[i] = tmp #float(raw_input("%d: " %i))
+        for i in deathRate:
+            self.DeathRate.append(i)
 
         print "\nConversion Rate"
         for i in xrange(0, len(self.ConversionRate)):
             if (self.ConversionRate[i] == -1):
                 tmp = float(raw_input("%d: " %i))
                 self.ConversionRate[i] = tmp #float(raw_input("%d: " %i))
+        for i in converRate:
+            self.ConversionRate.append(i)
 
         print "Predation Efficiency"
+        for i in xrange(0, len(cloneList)):
+            for j in self.PredationEfficiency:
+                j.append(0)
+        for i in xrange(0, len(cloneList)):
+            self.PredationEfficiency.append([0] * len(self.PredationEfficiency[0]))
         for i in xrange(0, len(self.PredationEfficiency)):
             for j in xrange(0, len(self.PredationEfficiency[i])):
                 if (self.PredationEfficiency[i][j] == -1):
                     tmp = float(raw_input("predator %d->%d: " %(i, j)))
                     self.PredationEfficiency[i][j] = tmp #float(raw_input("%d -> %d: " %(i, j)))
-
+                    try:
+                        self.PredationEfficiency[i][checkList[j]] = tmp
+                    except:
+                        pass
+                    try:
+                        self.PredationEfficiency[checkList[i]][j] = tmp
+                    except:
+                        pass
 
 #Formula:
 #n[i][t + 1] = n[i][t] - lambda[i]*n[i][t] + mu[i] * n[i][t] * (1 - n[i][t]/N[i]) 
