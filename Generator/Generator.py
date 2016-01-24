@@ -36,7 +36,7 @@ def Generate(List):
 
         begin = Graph['level%d' %level][0]
         NumOfLevel = len(Graph['level%d' %level])
-        End = max(3, ((maximum - next + NumOfLevel - 1) / NumOfLevel) + 1)
+        End = max(3, (Range + NumOfLevel - 1 / NumOfLevel))
 
         present = next
         for point in Graph['level%d' %level]:
@@ -49,6 +49,7 @@ def Generate(List):
             present = (present + end - next) % Range + next
 
             Graph[point] = PreyList
+            print point, ": ", PreyList
             #Graph[point] = range(next + point - begin, min((next + point - begin + 3), maximum) + 1)
     print "Generated", Graph
     return Graph
