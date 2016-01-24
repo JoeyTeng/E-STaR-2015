@@ -74,6 +74,8 @@ class dataClass(object):
 
         print "\nMax Population"
         for i in xrange(0, len(self.MaxPopulation)):
+            if (self.MaxPopulation[i] == 0):
+                self.MaxPopulation[i] = 1
             if (self.MaxPopulation[i] == -1):
                 tmp = float(raw_input("%d: " %i))
                 self.MaxPopulation[i] = tmp #float(raw_input("%d: " %i))
